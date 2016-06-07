@@ -1,0 +1,32 @@
+#!/bin/sh
+
+aftr_start()
+{
+	set -x
+	ip link set tun0 up
+	ip addr add 192.0.0.1 peer 192.0.0.2 dev tun0
+	ip route add 192.168.0.100/32 dev tun0
+	ip -6 addr add fe80::1 dev tun0
+	ip -6 route add 2001:240:63f:ff01::/64 dev tun0
+}
+
+aftr_stop()
+{
+	set -x                        
+	ip link set tun0 down
+}
+
+case "$1" in
+start)
+	aftr_start
+	;;
+stop)
+	aftr_stop
+	;;
+*)
+	echo "Usage: $0 start|stop"
+	exit 1
+	;;
+esac
+
+exit 0
